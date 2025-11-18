@@ -18,7 +18,11 @@ Users can visualize the solved maze and compare the behavior of DFS and BFS.
 * Option to select:
   * DFS (Stack)
   * BFS (Queue)
-* Solve maze using chosen algorithm
+* Input Validation: The program handles invalid input gracefully. If the user enters a value that is not 1 or 2 (including letters or symbols), the program will prompt again until a valid choice is entered.
+* Once solved, the program provides a menu to:
+   * Stop and exit the program 
+   * Load a different maze 
+   * Solve the same maze using a different method
 
 ## **Display Solution**
 * Show a solved maze with path marked with * characters
@@ -38,6 +42,10 @@ Users can visualize the solved maze and compare the behavior of DFS and BFS.
 3. Enter a maze filename (e.g., maze_solvable.txt) when prompted.
 4. Choose the solver algorithm by typing 1 for DFS or 2 for BFS.
 5. Displays maze solvability, path length, and number of cells explored.
+6. After solving, the user can select:
+   * 1 to Stop
+   * 2 to load a different maze
+   * 3 to solve the same maze using a different method
 --------
 ## **Development Notes**
 

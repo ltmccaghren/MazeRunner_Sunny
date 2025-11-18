@@ -18,47 +18,88 @@ public class MazeSolver {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            // 1. Prompt user for maze file name
-            System.out.print("Enter maze file name (e.g., maze1.txt): ");
-            String filename = scanner.nextLine();
+            while (true) {
+                // 1. Prompt user for maze file name
+                System.out.print("Enter maze file name (e.g., maze1.txt): ");
+                String filename = scanner.nextLine();
 
-            // 2. Load the maze from file
-            Maze maze = new Maze(filename);
-            System.out.println("\nMaze loaded:");
-            maze.printMaze();
+                // 2. Load the maze from file
+                Maze maze = new Maze(filename);
+                System.out.println("\nMaze loaded:");
+                maze.printMaze();
 
-            //3. Prompt user to choose solver algorithm
-            // Type 1 for DFS (Depth-First Search, uses a Stack)
-            // Type 2 for BFS (Breadth-First Search, uses a Queue)
-            System.out.print("\nChoose solver 1 or 2: 1 = DFS (Stack), 2 = BFS (Queue): ");
-            String choiceStr = scanner.nextLine();
-            int choice = Integer.parseInt(choiceStr.trim());
+                boolean sameMaze = true;
 
-            SolverResult result;
+                // Inner loop: allowing re-running different methods on SAME maze
 
-            // 4. Run the selected solver
-            if (choice == 1) {
-                result = solveDFS(maze);
-                System.out.println("\n--- DFS Result ---");
-            } else if (choice ==2) {
-                result = solveBFS(maze);
-                System.out.println("\n--- BFS Result ---");
-            } else {
-                System.out.println("Invalid choice.");
-                return;
+                while (sameMaze) {
+
+                    int choice;
+                    while (true) {
+                        System.out.print("\nChoose solver 1 or 2: 1 = DFS (Stack), 2 = BFS (Queue): ");
+                        String choiceStr = scanner.nextLine().trim();
+                        try{
+                            choice = Integer.parseInt(choiceStr);
+                            if (choice == 1 || choice == 2){
+                                break; // valid choice
+                            }
+                        }  catch (NumberFormatException e) {
+                          // do nothing, will fall through to print message
+                        }
+                        System.out.println("Invalid choice. Please enter 1 or 2.");
+                    }
+
+                    // 3. Prompt user to choose solver algorithm
+                    SolverResult result = null;
+
+                    // 4. Run the selected solver
+                    if (choice == 1) {
+                        result = solveDFS(maze);
+                        System.out.println("\n--- DFS Result ---");
+                    } else if (choice == 2) {
+                        result = solveBFS(maze);
+                        System.out.println("\n--- BFS Result ---");
+                    }
+
+                    // 5. Display the solution
+                    if (result.path != null) {
+                        System.out.println("Path found!");
+                        printSolution(maze, result.path);
+                        System.out.println("Steps: " + result.path.size());
+                    } else {
+                        System.out.println("No solution found.");
+                        System.out.println("Steps: 0");
+                    }
+                    System.out.println("Cells explored: " + result.exploredCells);
+
+                    // === Post-solve menu WITH validation loop ===
+                    String option;
+                    while (true) {
+                        System.out.println("\nWhat would you like to do?");
+                        System.out.println("1. Stop");
+                        System.out.println("2. Different maze");
+                        System.out.println("3. Same maze, different method");
+                        System.out.print("Enter 1, 2, or 3: ");
+
+                        option = scanner.nextLine();
+                        if (option.equals("1") || option.equals("2") || option.equals("3")) {
+                            break; // valid input → exit validation loop
+                        }
+                        System.out.println("\nInvalid input. Please enter 1, 2, or 3.");
+                    }
+                    if (option.equals("1")) {
+                        System.out.println("Exiting program...");
+                        return;          // Exit entire program
+                    } else if (option.equals("2")) {
+                        sameMaze = false; // Leave inner loop → ask for new maze
+                    }
+                    /*
+                     * if option.equals "3", do nothing
+                     * the inner loop will repeat automatically
+                     * allowing the user to choose a solver on the same maze again
+                     */
+                }
             }
-
-            // 5. Display the solution
-            if (result.path != null) {
-                System.out.println("Path found!");
-                printSolution(maze, result.path);
-                System.out.println("Steps: " + result.path.size());
-            } else {
-                System.out.println("No solution found.");
-                System.out.println("Steps: 0");
-            }
-            System.out.println("Cells explored: " + result.exploredCells);
-
         } catch (FileNotFoundException e) {
             System.err.println("Error: Maze file not found!");
         } catch (Exception e) {
